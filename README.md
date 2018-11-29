@@ -8,7 +8,7 @@ Success for us is fully understanding what we are implementing. We are striving 
 
 ## References
 
-Lecture on DSP architecture from Berkeley](http://bwrcs.eecs.berkeley.edu/Classes/CS252/Notes/Lec09-DSP.pdf)
+[Lecture on DSP architecture from Berkeley](http://bwrcs.eecs.berkeley.edu/Classes/CS252/Notes/Lec09-DSP.pdf)
 
 [Analog Devices’ Beginners guide to Digital Signal Processing](https://www.analog.com/en/design-center/landing-pages/001/beginners-guide-to-dsp.html)
 
