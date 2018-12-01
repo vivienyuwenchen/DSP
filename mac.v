@@ -2,7 +2,7 @@
 // Basic building block modules
 //-----------------------------------------------------------------------------
 
-module multiplier #( parameter W = 8 )
+module multiplier #( parameter W = 16 )
 (
     input  [W-1:0]   a,
     input  [W-1:0]   b,
@@ -14,7 +14,7 @@ module multiplier #( parameter W = 8 )
 endmodule
 
 
-module accumulator #( parameter W = 16 )
+module accumulator #( parameter W = 32 )
 (
     input              clk, load, clear,
     input      [W-1:0] mult_out,

@@ -26,3 +26,26 @@ module testBarrel();
     end
 
 endmodule
+
+module testParallel();
+
+    reg [31:0] in;
+    reg [3:0] sh;
+    wire [15:0] out;
+
+    parallel #(32) dut(.in(in),
+                    .sh(sh),
+			        .out(out));
+
+    initial begin
+        $display("Testing parallel shifter...");
+        in=32'hABCDEF09; sh=4'h4; #1000
+        if(out != 16'hBCDE)
+            $display("ERROR Expected: BCDE, Got: %h", out);
+        in=32'h12345678; sh=4'h1; #1000
+        if(out != 16'h2468)
+            $display("ERROR Expected: 2468, Got: %h", out);
+        $display("Done with parallel shifter!");
+    end
+
+endmodule
