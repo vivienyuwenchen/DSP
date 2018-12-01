@@ -2,18 +2,6 @@
 // Basic building block modules
 //-----------------------------------------------------------------------------
 
-module tri_buf #( parameter W = 16 )
-(
-    input  [W-1:0] a,
-    output [W-1:0] b,
-    input          enable
-);
-
-    assign b = (enable) ? a : 1'bz;
-
-endmodule
-
-
 module multiplier #( parameter W = 8 )
 (
     input  [W-1:0]   a,
