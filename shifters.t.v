@@ -15,14 +15,16 @@ module testBarrel();
 			        .out(out));
 
     initial begin
-        $display("Testing barrel shifter...");
+        $display("--------------------------------------------------");
+        $display("Barrel shifter tests starting...");
         in=16'hABCD; sh=4'h4; #1000
         if(out != 32'hFFFABCD0)
             $display("ERROR Expected: FFFABCD0, Got: %h", out);
         in=16'h1234; sh=4'hC; #1000
         if(out != 32'h01234000)
             $display("ERROR Expected: 01234000, Got: %h", out);
-        $display("Done with barrel shifter!");
+        $display("Barrel shifter tests done!");
+        $display("--------------------------------------------------");
     end
 
 endmodule
@@ -38,14 +40,16 @@ module testParallel();
 			        .out(out));
 
     initial begin
-        $display("Testing parallel shifter...");
+        $display("--------------------------------------------------");
+        $display("Parallel shifter tests starting...");
         in=32'hABCDEF09; sh=4'h4; #1000
         if(out != 16'hBCDE)
             $display("ERROR Expected: BCDE, Got: %h", out);
         in=32'h12345678; sh=4'h1; #1000
         if(out != 16'h2468)
             $display("ERROR Expected: 2468, Got: %h", out);
-        $display("Done with parallel shifter!");
+        $display("Parallel shifter tests done!");
+        $display("--------------------------------------------------");
     end
 
 endmodule
