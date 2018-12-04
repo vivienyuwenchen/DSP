@@ -14,6 +14,15 @@ module dsp
     input clk
 );
 
+    dff #(12) PC(.clk(clk),
+                    .enable(1'b1),
+                    .d(pcInMuxOut),
+                    .q(pcOut));
+
+    instrmem instrmem(.clk(clk),
+                    .addr(pcOut),
+                    .instr(romOut));
+
     dff #(16) T(.clk(clk),
                     .enable(1'b1),
                     .d(dataBus),
@@ -27,6 +36,11 @@ module dsp
                     .enable(1'b1),
                     .d(product),
                     .q(pOut));
+
+    mux2 #(16) MultInMUX(.in0(dataBus),
+                    .in1(romOut_SE16),
+                    .sel(multInMux_ctrl),
+                    .out(multInMuxOut));
 
     barrel #(16) ALUShifter(.in(dataBus),
                     .sh(aluShifter_ctrl),
@@ -46,6 +60,10 @@ module dsp
                     .operandA(aluInMuxOut),
                     .operandB(accumOut),
                     .command(alu_ctrl));
+
+    assign dataBus_SE = {{16{dataBus[15]}}, dataBus};
+    assign romOut_SE = {{24{romOut[7]}}, romOut};
+    assign stack_SE = {{20{stack[11]}}, stack};
 
     mux8 #(32) AccumInMUX(.in0(aluOut),
                     .in1(aluShiftOut),
