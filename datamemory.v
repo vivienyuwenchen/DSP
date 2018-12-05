@@ -5,16 +5,16 @@
 module datamem
 (
     input clk,
-    input en,                 // Data memory write enable
-    input [31:0] addr,       // Data memory address
-    input [31:0] in,         // Data memory input
-    output [31:0] out        // Data memory output
+    input en,
+    input [7:0] addr,
+    input [15:0] in,
+    output [15:0] out
 );
 
-    wire [11:0] index;      // Data memory index
-    reg [31:0] mem[4095:0];     // 16kb Memory
+    wire [7:0] index;
+    reg [15:0] mem[143:0];
 
-    assign index = {addr[13:2]};
+    assign index = {addr[7], addr[7:1]};
 
     always @(posedge clk) begin
         if (en) begin
