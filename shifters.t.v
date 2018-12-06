@@ -40,6 +40,7 @@ module testParallel();
 			        .out(out));
 
     initial begin
+        #3000
         $display("--------------------------------------------------");
         $display("Parallel shifter tests starting...");
         in=32'hABCDEF09; sh=4'h4; #1000
