@@ -10,8 +10,8 @@ module instructiondecoder
     output [6:0]    D,     // 15:11 bits of R-type
     output [7:0]    K,  // 7:0 bits of k type [8-bit immediate]
     output    ARP,     // 1 bit Addres pointing mode
-    output [15:0]   ALL,  // 32 bits of instruction from instruction memor
-    input  [15:0]   instruction  // 32 bits of instruction from instruction memory
+    output [15:0]   ALL,  // 15 bits of instruction from instruction memor
+    input  [15:0]   instruction  // 15 bits of instruction from instruction memory
 );
 
     assign OP_dk = instruction[15:8];
