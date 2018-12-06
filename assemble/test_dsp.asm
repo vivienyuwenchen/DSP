@@ -1,0 +1,4 @@
+ADD 9, 5
+ADD 1, 1
+SUB 11, 2
+LACK 10
