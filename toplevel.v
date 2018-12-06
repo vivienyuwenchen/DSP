@@ -19,9 +19,20 @@ module dsp
                     .d(pcInMuxOut),
                     .q(pcOut));
 
-    instrmem instrmem(.clk(clk),
+    assign pcPlus2 = pcOut + 12'h002;
+
+    instrmem InstrMem(.clk(clk),
                     .addr(pcOut),
-                    .instr(romOut));
+                    .instr(instruction));
+
+    instructiondecoder dut(.OP_dk(OP_dk),
+                    .OP_s(OP_s),
+                    .S(S),
+                    .D(D),
+                    .K(K),
+                    .ARP(ARP),
+                    .ALL(ALL),
+                    .instruction(instruction));
 
     dff #(16) T(.clk(clk),
                     .enable(1'b1),
