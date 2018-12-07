@@ -20,7 +20,7 @@ module dsp
     wire [2:0] alu_ctrl, accumInMux_ctrl;
     wire [1:0] pcInMux_ctrl, aluInMux_ctrl, databus_ctrl;
     wire multInMux_ctrl, tReg_ctrl, pReg_ctrl, accumReset_ctrl, arInMux_ctrl, dataRamIn_ctrl, dataWrEn_ctrl;
-    wire load_acc, abs_acc, enable_acc;
+    wire load_acc, abs_acc, enable_acc, dp_ctrl;
     wire [2:0] accumShifter_ctrl;                       // unused
     wire [7:0] OP_dk, K;
     wire [6:0] D;
@@ -143,7 +143,11 @@ module dsp
                     .in(arIn),
                     .out(arOut));
 
-    assign DP = D[0];
+    dff #(1) DPReg(.clk(clk),
+                    .enable(dp_ctrl),
+                    .d(D[0]),
+                    .q(DP));
+
     assign dpOut = {DP, D};             // check order
 
     mux2 #(8) DataRamInMux(.in0(arOut),
