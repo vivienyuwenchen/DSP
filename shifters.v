@@ -18,11 +18,11 @@ module barrel #( parameter W = 32 )
 
 endmodule
 
-// Left-shifts 32-bit accumulator and places 16 bits into data RAM
+// Left-shifts 32-bit accumulator by 0, 1, or 4 and places 16 bits into data RAM
 module parallel #( parameter W = 32 )
 (
     input[31:0]  in,
-    input[3:0]   sh,
+    input[2:0]   sh,
     output[15:0] out
 );
 
