@@ -32,16 +32,12 @@ module cpu_test ();
   	reset = 0; #10;
 
     #82450
-    if(dsp.accumulator.AccumulatorOutput[8] != 32'h1 || dsp.accumulator.AccumulatorOutput[9] != 32'h3 || dsp.accumulator.AccumulatorOutput[10] != 32'h2 || dsp.accumulator.AccumulatorOutput[11] != 32'h3 || dsp.accumulator.AccumulatorOutput[12] != 32'h2 || dsp.accumulator.AccumulatorOutput[13] != 32'h5|| dsp.accumulator.AccumulatorOutput[14] != 32'h6 ) begin// || dsp.accumulator.AccumulatorOutput[4] != 32'hb || cpu.register.RegisterOutput[8] != 32'hb || cpu.register.RegisterOutput[9] != 32'h37)
+    if(dsp.Accumulator.out != 32'h1 || dsp.P.q != 32'h1 || dsp.T.q != 16'h1) begin
           $display("----------------------------------------");
           $display("FAILED PIPELINE ALU TEST");
-          $display("$t0$: Expected: %h, ACTUAL: %h", 32'h1, dsp.accumulator.AccumulatorOutput[8]);
-          $display("$t1$: Expected: %h, ACTUAL: %h", 32'h3, dsp.accumulator.AccumulatorOutput[9]);
-          $display("$t2$: Expected: %h, ACTUAL: %h", 32'h2, dsp.accumulator.AccumulatorOutput[10]);
-          $display("$t3$: Expected: %h, ACTUAL: %h", 32'h3, dsp.accumulator.AccumsulatorOutput[11]);
-          $display("$t4$: Expected: %h, ACTUAL: %h", 32'h2, dsp.accumulator.AccumulatorOutput[12]);
-          $display("$t5$: Expected: %h, ACTUAL: %h", 32'h5, dsp.accumulator.AccumulatorOutput[13]);
-          $display("$t6$: Expected: %h, ACTUAL: %h", 32'h6, dsp.accumulator.AccumulatorOutput[14]);
+          $display("$AccumOut$: Expected: %h, ACTUAL: %h", 32'h1, dsp.Accumulator.out);
+          $display("$Pout$: Expected: %h, ACTUAL: %h", 32'h1, dsp.P.q);
+          $display("$Tout$: Expected: %h, ACTUAL: %h", 16'h1, dsp.T.q);
           $display("----------------------------------------");
 
           end
@@ -51,6 +47,6 @@ module cpu_test ();
          $display("----------------------------------------");
          end
   	#2000 $finish();
-      end
+      end 
 
   endmodule
