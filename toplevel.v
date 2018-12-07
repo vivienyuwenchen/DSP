@@ -18,8 +18,9 @@ module dsp
 );
 
     wire [2:0] alu_ctrl, accumInMux_ctrl;
-    wire [1:0] pcInMux_ctrl, aluInMux_ctrl;
+    wire [1:0] pcInMux_ctrl, aluInMux_ctrl, databus_ctrl;
     wire multInMux_ctrl, tReg_ctrl, pReg_ctrl, accumReset_ctrl, arInMux_ctrl, dataRamIn_ctrl, dataWrEn_ctrl;
+    wire load_acc, abs_acc, enable_acc;
     wire [2:0] accumShifter_ctrl;                       // unused
     wire [7:0] OP_dk, K;
     wire [6:0] D;
@@ -27,9 +28,9 @@ module dsp
     wire ARP, DP;
     wire [11:0] pcCount, pcPlus2, pcInMuxOut;
     wire [11:0] instructionPC, dataPC, stackOut;        // unused
-    wire [15:0] instrMPYK_SE;                           // unused
+    wire [15:0] instrMPYK_SE, accumOutLow;              // unused
     wire [15:0] instruction, dataBus, dataIn;
-    wire [15:0] multInMuxOut, tOut, arIn, accumShiftOut;
+    wire [15:0] multInMuxOut, tOut, arIn, accumShiftOut, dataOut;
     wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut;
     wire [7:0] arOut, dpOut, dataAddr;
     wire [31:0] data0Padded, dk0Padded, stack0Padded;   // unused
@@ -121,6 +122,9 @@ module dsp
 
     accumulator #(32) Accumulator(.clk(clk),
                     .reset(accumReset_ctrl),
+                    .load(load_acc),
+                    .abs(abs_acc),
+                    .en(enable_acc),
                     .in(accumInMuxOut),
                     .out(accumOut));
 
@@ -139,17 +143,26 @@ module dsp
                     .out(arOut));
 
     assign DP = D[0];
-    assign dpOut = {D, DP};             // check order
+    assign dpOut = {DP, D};             // check order
 
     mux2 #(8) DataRamInMux(.in0(arOut),
                     .in1(dpOut),
                     .sel(dataRamIn_ctrl),
                     .out(dataAddr));
 
-    datamem dut(.clk(clk),
-                    .en(dataWrEn_ctrl), // where is this coming from?
+    datamem DataMem(.clk(clk),
+                    .en(dataWrEn_ctrl),
                     .addr(dataAddr),
-                    .in(dataIn),
+                    .in(dataBus),
+                    .out(dataOut));
+
+    assign accumOutLow = accumOut[15:0];    // unused
+
+    mux4 #(16) DataBusMux(.in0(instruction),
+                    .in1(dataOut),
+                    .in2(accumShiftOut),
+                    .in3(accumOutLow),      // unused
+                    .sel(databus_ctrl),
                     .out(dataBus));
 
 endmodule

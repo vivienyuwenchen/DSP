@@ -19,11 +19,12 @@ module accumulator #( parameter W = 32 )
                 out <= {W{1'b0}};
             else if (load)
                 out <= in;
-            else if (abs)
+            else if (abs) begin
                 if (out[W-1] == 1)
                     out <= -out;
                 else if (out[W-1] == 0)
                     out <= out;
+            end
             else
                 out <= out + in;
         end
