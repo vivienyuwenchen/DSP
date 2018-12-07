@@ -28,7 +28,7 @@ module dsp
     wire [11:0] pcCount, pcPlus2, pcInMuxOut;
     wire [11:0] instructionPC, dataPC, stackOut;        // unused
     wire [15:0] instrMPYK_SE;                           // unused
-    wire [15:0] instruction, dataBus, ALL, dataIn;
+    wire [15:0] instruction, dataBus, dataIn;
     wire [15:0] multInMuxOut, tOut, arIn, accumShiftOut;
     wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut;
     wire [7:0] arOut, dpOut, dataAddr;
@@ -63,7 +63,6 @@ module dsp
                     .D(D),
                     .K(K),
                     .ARP(ARP),
-                    .ALL(ALL),
                     .instruction(instruction));
 
     mux2 #(16) MultInMUX(.in0(dataBus),
