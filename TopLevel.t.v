@@ -17,11 +17,11 @@ module cpu_test ();
     always #10 clk = !clk;
 
     // Instantiate CPU
-    dap dsp(.clk(clk));
+    dsp dsp(.clk(clk));
 
     initial begin
 
-    $readmemh("../asm/dat/alu_test.dat", cpu.mem.mem,0);
+    $readmemh("../assemble/machine_code.dat", dsp.InstrMem,mem, 0);
 
   	$dumpfile("dspTopLevel.vcd");
   	$dumpvars();
@@ -32,12 +32,12 @@ module cpu_test ();
   	reset = 0; #10;
 
     #82450
-    if(dsp.Accumulator.out != 32'h1 || dsp.P.q != 32'h1 || dsp.T.q != 16'h1) begin
+    if(dsp.Accumulator.out != 32'b0 || dsp.P.q != 16'b0 || dsp.T.q != 16'b0) begin
           $display("----------------------------------------");
           $display("FAILED DSP TEST");
-          $display("$AccumOut$: Expected: %h, ACTUAL: %h", 32'h1, dsp.Accumulator.out);
-          $display("$Pout$: Expected: %h, ACTUAL: %h", 32'h1, dsp.P.q);
-          $display("$Tout$: Expected: %h, ACTUAL: %h", 16'h1, dsp.T.q);
+          $display("$AccumOut$: Expected: %h, ACTUAL: %h", 32'32'b0, dsp.Accumulator.out);
+          $display("$Pout$: Expected: %h, ACTUAL: %h", 16'b0, dsp.P.q);
+          $display("$Tout$: Expected: %h, ACTUAL: %h", 16'b0, dsp.T.q);
           $display("----------------------------------------");
 
           end
@@ -47,6 +47,6 @@ module cpu_test ();
          $display("----------------------------------------");
          end
   	#2000 $finish();
-      end 
+      end
 
   endmodule

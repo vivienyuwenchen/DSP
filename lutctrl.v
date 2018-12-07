@@ -47,9 +47,9 @@ module instructionLUT
                 multInMux_ctrl = 0;
                 aluInMux_ctrl = 2'b00; //0
                 accumInMux_ctrl = 2'b00; //d
-                arInMux_ctrl = 1;
+                arInMux_ctrl = 0;
                 dataMux_ctrl = 0;
-                dataRamIn_ctrl = 0;
+                dataRamIn_ctrl = 1;
                 pcInMux_ctrl = 2'b11;
                 alu_ctrl = 3'b000;
 
@@ -133,7 +133,7 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00; //0
-                        accumInMux_ctrl = 2'b11; //d
+                        accumInMux_ctrl = 2'b01; //b
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 0;
@@ -146,13 +146,13 @@ module instructionLUT
                         pReg_ctrl = 0;
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
-                        aluInMux_ctrl = 2'b00; //0
-                        accumInMux_ctrl = 2'b11; //d
+                        aluInMux_ctrl = 2'b10; //3
+                        accumInMux_ctrl = 2'b00; //a
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
-                        dataRamIn_ctrl = 0;
+                        dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
-                        alu_ctrl = 3'b000;
+                        alu_ctrl = 3'd4;
 
 
                     end
@@ -179,7 +179,7 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00;
-                        accumInMux_ctrl = 2'b00; 
+                        accumInMux_ctrl = 2'b00;
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 1;
@@ -236,13 +236,13 @@ module instructionLUT
                             pReg_ctrl = 0;
                             accumReset_ctrl = 0;
                             multInMux_ctrl = 0;
-                            aluInMux_ctrl = 2'b00; //b
-                            accumInMux_ctrl = 2'b11; //d
-                            arInMux_ctrl = 1;
+                            aluInMux_ctrl = 2'd3; //3
+                            accumInMux_ctrl = 2'b00; //a
+                            arInMux_ctrl = 0;
                             dataMux_ctrl = 0;
-                            dataRamIn_ctrl = 0;
+                            dataRamIn_ctrl = 1;
                             pcInMux_ctrl = 2'b11;
-                            alu_ctrl = 3'b000;
+                            alu_ctrl = 3'd0;
 
                             end
                             `opLAC: begin
@@ -264,13 +264,13 @@ module instructionLUT
                                 pReg_ctrl = 0;
                                 accumReset_ctrl = 0;
                                 multInMux_ctrl = 0;
-                                aluInMux_ctrl = 2'b00; //0
-                                accumInMux_ctrl = 2'b11; //d
-                                arInMux_ctrl = 1;
+                                aluInMux_ctrl = 2'd3; //3
+                                accumInMux_ctrl = 2'b00; //a
+                                arInMux_ctrl = 0;
                                 dataMux_ctrl = 0;
-                                dataRamIn_ctrl = 0;
+                                dataRamIn_ctrl = 1;
                                 pcInMux_ctrl = 2'b11;
-                                alu_ctrl = 3'b000;
+                                alu_ctrl = 3'd1;
 
                             end
                             default: begin

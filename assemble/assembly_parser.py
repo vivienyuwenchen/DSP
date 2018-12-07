@@ -544,9 +544,12 @@ class assembly_parser(object):
        #  print( "\nThe label list is: " + str(self.symbol_table))
        # # print "\nThe current location is: " + str(self.current_location)
        #  print ('\n\n')
+        f = open("machine_code.dat", "w")
         print ('The memory map in binary:')
         for output in self.output_array:
             print(output)
+            f.write(output +"\n")
+
 
     def value_outside_range(self, value):
         ''' Check if value is greater than 16-bits
