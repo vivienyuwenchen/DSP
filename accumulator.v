@@ -10,7 +10,7 @@ module accumulator #( parameter W = 32 )
 );
 
     initial begin
-        out <= {W{1'b0}};
+        out <= {W{1'b1}};
     end
 
     always @ ( posedge clk ) begin
