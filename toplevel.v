@@ -8,24 +8,56 @@
 `include "alu.v"
 `include "muxes.v"
 `include "dff.v"
+`include "instructionmemory.v"
+`include "datamemory.v"
+`include "decoder.v"
 
 module dsp
 (
     input clk
 );
 
+    wire [2:0] alu_ctrl, accumInMux_ctrl;
+    wire [1:0] pcInMux_ctrl, aluInMux_ctrl;
+    wire multInMux_ctrl, tReg_ctrl, pReg_ctrl, accumReset_ctrl, arInMux_ctrl, dataRamIn_ctrl, dataWrEn_ctrl;
+    wire [3:0] aluShifter_ctrl, accumShifter_ctrl;
+    wire [7:0] OP_dk, K;
+    wire [6:0] D;
+    wire [3:0] OP_s, S;
+    wire ARP, DP;
+    wire [11:0] pcCount, pcPlus2, pcInMuxOut;
+    wire [11:0] instructionPC, dataPC, stackOut;        // unused
+    wire [15:0] instrMPYK_SE;                           // unused
+    wire [15:0] instruction, dataBus, ALL, dataIn;
+    wire [15:0] multInMuxOut, tOut, arIn, accumShiftOut;
+    wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut;
+    wire [7:0] arOut, dpOut, dataAddr;
+    wire [31:0] data0Padded, dk0Padded, stack0Padded;   // unused
+    wire carryout, zero, overflow;                      // unused
+    wire [31:0] in3, in6, in7;
+
+    assign instructionPC = instruction[11:0];   // unused
+    assign dataPC = dataBus[11:0];              // unused
+
+    mux4 #(12) PCInMux(.in0(instructionPC), // unused
+                    .in1(stackOut),         // unused
+                    .in2(dataPC),           // unused
+                    .in3(pcPlus2),
+                    .sel(pcInMux_ctrl),
+                    .out(pcInMuxOut));
+
     dff #(12) PC(.clk(clk),
                     .enable(1'b1),
                     .d(pcInMuxOut),
-                    .q(pcOut));
+                    .q(pcCount));
 
-    assign pcPlus2 = pcOut + 12'h002;
+    assign pcPlus2 = pcCount + 12'h002;
 
     instrmem InstrMem(.clk(clk),
-                    .addr(pcOut),
+                    .addr(pcCount),
                     .instr(instruction));
 
-    instructiondecoder dut(.OP_dk(OP_dk),
+    instructiondecoder InstrDec(.OP_dk(OP_dk),
                     .OP_s(OP_s),
                     .S(S),
                     .D(D),
@@ -34,8 +66,13 @@ module dsp
                     .ALL(ALL),
                     .instruction(instruction));
 
+    mux2 #(16) MultInMUX(.in0(dataBus),
+                    .in1(instrMPYK_SE),       // not used, instrMPYK_SE = {3{1'b0}, instrMPYK}
+                    .sel(multInMux_ctrl),
+                    .out(multInMuxOut));
+
     dff #(16) T(.clk(clk),
-                    .enable(1'b1),
+                    .enable(tReg_ctrl),
                     .d(dataBus),
                     .q(tOut));
 
@@ -44,22 +81,19 @@ module dsp
                     .out(product));
 
     dff #(32) P(.clk(clk),
-                    .enable(1'b1),
+                    .enable(pReg_ctrl),
                     .d(product),
                     .q(pOut));
 
-    mux2 #(16) MultInMUX(.in0(dataBus),
-                    .in1(romOut_SE16),
-                    .sel(multInMux_ctrl),
-                    .out(multInMuxOut));
-
     barrel #(16) ALUShifter(.in(dataBus),
-                    .sh(aluShifter_ctrl),
+                    .sh(aluShifter_ctrl),       // where is this coming from?
 			        .out(aluShiftOut));
+
+    assign data0Padded = {{16{1'b0}}, dataBus};
 
     mux4 #(32) ALUInMUX(.in0(aluShiftOut),
                     .in1(pOut),
-                    .in2(dataBus_SE),
+                    .in2(data0Padded),
                     .in3(in3),              // unused
                     .sel(aluInMux_ctrl),
                     .out(aluInMuxOut));
@@ -72,28 +106,51 @@ module dsp
                     .operandB(accumOut),
                     .command(alu_ctrl));
 
-    assign dataBus_SE = {{16{dataBus[15]}}, dataBus};
-    assign romOut_SE = {{24{romOut[7]}}, romOut};
-    assign stack_SE = {{20{stack[11]}}, stack};
+    assign dk0Padded = {{24{1'b0}}, OP_dk};
+    assign stack0Padded = {{20{1'b0}}, stackOut};
 
     mux8 #(32) AccumInMUX(.in0(aluOut),
                     .in1(aluShiftOut),
                     .in2(pOut),
-                    .in3(dataBus_SE),       // come back later
-                    .in4(romOut_SE),
-                    .in5(stack_SE),
+                    .in3(data0Padded),
+                    .in4(dk0Padded),
+                    .in5(stack0Padded),     // unused
                     .in6(in6),              // unused
                     .in7(in7),              // unused
                     .sel(accumInMux_ctrl),
                     .out(accumInMuxOut));
 
     accumulator #(32) Accumulator(.clk(clk),
-                    .reset(1'b0),
+                    .reset(accumReset_ctrl),
                     .in(accumInMuxOut),
                     .out(accumOut));
 
     parallel #(32) AccumShifter(.in(accumOut),
-                    .sh(accumShifter_ctrl),
+                    .sh(accumShifter_ctrl),         // where is this coming from?
 			        .out(accumShiftOut));
+
+    mux2 #(16) ARInMux(.in0(dataBus),
+                    .in1(instruction),
+                    .sel(arInMux_ctrl),
+                    .out(arIn));
+
+    auxreg #(16) AR(.clk(clk),
+                    .ARP(ARP),
+                    .in(arIn),
+                    .out(arOut));
+
+    assign DP = dataBus[0];             // where is this coming from?
+    assign dpOut = {D, DP};             // CHECK ORDER
+
+    mux2 #(8) DataRamInMux(.in0(arOut),
+                    .in1(dpOut),
+                    .sel(dataRamIn_ctrl),
+                    .out(dataAddr));
+
+    datamem dut(.clk(clk),
+                    .en(dataWrEn_ctrl), // where is this coming from?
+                    .addr(dataAddr),
+                    .in(dataIn),
+                    .out(dataBus));
 
 endmodule
