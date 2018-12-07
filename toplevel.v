@@ -31,7 +31,7 @@ module dsp
     wire [15:0] instrMPYK_SE, accumOutLow;              // unused
     wire [15:0] instruction, dataBus, dataIn;
     wire [15:0] multInMuxOut, tOut, arIn, accumShiftOut, dataOut;
-    wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut;
+    wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut, dataHigh;
     wire [7:0] arOut, dpOut, dataAddr;
     wire [31:0] data0Padded, dk0Padded, stack0Padded;   // unused
     wire carryout, zero, overflow;                      // unused
@@ -108,6 +108,7 @@ module dsp
 
     assign dk0Padded = {{24{1'b0}}, OP_dk};
     assign stack0Padded = {{20{1'b0}}, stackOut};
+    assign dataHigh = {dataBus, {16{1'b0}}};
 
     mux8 #(32) AccumInMUX(.in0(aluOut),
                     .in1(aluShiftOut),
@@ -115,7 +116,7 @@ module dsp
                     .in3(data0Padded),
                     .in4(dk0Padded),
                     .in5(stack0Padded),     // unused
-                    .in6(in6),              // unused
+                    .in6(dataHigh),         // unused
                     .in7(in7),              // unused
                     .sel(accumInMux_ctrl),
                     .out(accumInMuxOut));
