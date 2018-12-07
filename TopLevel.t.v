@@ -38,7 +38,7 @@ module cpu_test ();
           $display("$t0$: Expected: %h, ACTUAL: %h", 32'h1, dsp.accumulator.AccumulatorOutput[8]);
           $display("$t1$: Expected: %h, ACTUAL: %h", 32'h3, dsp.accumulator.AccumulatorOutput[9]);
           $display("$t2$: Expected: %h, ACTUAL: %h", 32'h2, dsp.accumulator.AccumulatorOutput[10]);
-          $display("$t3$: Expected: %h, ACTUAL: %h", 32'h3, dsp.accumulator.AccumulatorOutput[11]);
+          $display("$t3$: Expected: %h, ACTUAL: %h", 32'h3, dsp.accumulator.AccumsulatorOutput[11]);
           $display("$t4$: Expected: %h, ACTUAL: %h", 32'h2, dsp.accumulator.AccumulatorOutput[12]);
           $display("$t5$: Expected: %h, ACTUAL: %h", 32'h5, dsp.accumulator.AccumulatorOutput[13]);
           $display("$t6$: Expected: %h, ACTUAL: %h", 32'h6, dsp.accumulator.AccumulatorOutput[14]);
