@@ -1,35 +1,56 @@
-`include "toplevel.v"
+`include "pipelinedcpu.v"
 
-module cputest();
+//------------------------------------------------------------------------
+// Test bench for XOR SUB SLT sequence.
+// instructions were generated from xor_sub_slt.asm
+// This test bench test the ADDI, XORI, SUB, SLT, BNE, J functionality
+// outputs are found at verious registers including
+//------------------------------------------------------------------------
 
-reg clk;
-wire[1023:0] registers;
+module cpu_test ();
 
-dsp dsp(.clk(clk), .registers(registers));
+    reg clk;
+    reg reset;
 
-initial clk=0;
-always #10 clk=!clk;
+    // Clock generation
+    initial clk=0;
+    always #10 clk = !clk;
 
-wire[31:0] registers2d[31:0];
+    // Instantiate CPU
+    cpu cpu(.clk(clk));
 
-genvar i;
-generate for (i=0; i<32; i=i+1) begin : unpack_reg
-	assign registers2d[i][31:0] = registers[((32)*i+(31)):((32)*i)];
-end
-endgenerate
+    initial begin
 
-integer j, k;
-initial begin
-    $dumpfile("cpu.vcd");
-    $dumpvars(0,dut);
+    $readmemh("../asm/dat/alu_test.dat", cpu.mem.mem,0);
 
-    #(800*20)
-    
-	$display("end:",);
-	for (j=0; j<32; j=j+1) begin
-        $display("reg %d : %h", j, registers2d[j]);
-    end
+  	$dumpfile("cpu_alu.vcd");
+  	$dumpvars();
 
-	$finish;
-end
-endmodule
+  	// Assert reset pulse
+  	reset = 0; #10;
+  	reset = 1; #10;
+  	reset = 0; #10;
+
+    #82450
+    if(cpu.register.RegisterOutput[8] != 32'h1 || cpu.register.RegisterOutput[9] != 32'h3 || cpu.register.RegisterOutput[10] != 32'h2 || cpu.register.RegisterOutput[11] != 32'h3 || cpu.register.RegisterOutput[12] != 32'h2 || cpu.register.RegisterOutput[13] != 32'h5|| cpu.register.RegisterOutput[14] != 32'h6 ) begin// || cpu.register.RegisterOutput[4] != 32'hb || cpu.register.RegisterOutput[8] != 32'hb || cpu.register.RegisterOutput[9] != 32'h37)
+          $display("----------------------------------------");
+          $display("FAILED PIPELINE ALU TEST");
+          $display("$t0$: Expected: %h, ACTUAL: %h", 32'h1, cpu.register.RegisterOutput[8]);
+          $display("$t1$: Expected: %h, ACTUAL: %h", 32'h3, cpu.register.RegisterOutput[9]);
+          $display("$t2$: Expected: %h, ACTUAL: %h", 32'h2, cpu.register.RegisterOutput[10]);
+          $display("$t3$: Expected: %h, ACTUAL: %h", 32'h3, cpu.register.RegisterOutput[11]);
+          $display("$t4$: Expected: %h, ACTUAL: %h", 32'h2, cpu.register.RegisterOutput[12]);
+          $display("$t5$: Expected: %h, ACTUAL: %h", 32'h5, cpu.register.RegisterOutput[13]);
+          $display("$t6$: Expected: %h, ACTUAL: %h", 32'h6, cpu.register.RegisterOutput[14]);
+          $display("----------------------------------------");
+
+          end
+   else begin
+         $display("----------------------------------------");
+         $display("PASSED PIPELINE ALU TEST");
+         $display("----------------------------------------");
+         end
+  	#2000 $finish();
+      end
+
+  endmodule
