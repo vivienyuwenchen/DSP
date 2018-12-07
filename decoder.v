@@ -10,7 +10,6 @@ module instructiondecoder
     output [6:0]    D,     // 15:11 bits of R-type
     output [7:0]    K,  // 7:0 bits of k type [8-bit immediate]
     output    ARP,     // 1 bit Addres pointing mode
-    output [15:0]   ALL,  // 15 bits of instruction from instruction memor
     input  [15:0]   instruction  // 15 bits of instruction from instruction memory
 );
 
@@ -20,6 +19,5 @@ module instructiondecoder
     assign D = instruction[6:0];
     assign K = instruction[7:0];
     assign ARP = instruction[7];
-    assign ALL = instruction[15:0];
 
 endmodule

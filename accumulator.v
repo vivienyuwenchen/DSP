@@ -4,7 +4,7 @@
 
 module accumulator #( parameter W = 32 )
 (
-    input clk, reset,
+    input clk, reset, load, abs, en,
     input [W-1:0] in,
     output reg [W-1:0] out
 );
@@ -14,10 +14,20 @@ module accumulator #( parameter W = 32 )
     end
 
     always @ ( posedge clk ) begin
-        if (reset)
-            out <= {W{1'b0}};
-        else
-            out <= out + in;
+        if (en) begin
+            if (reset)
+                out <= {W{1'b0}};
+            else if (load)
+                out <= in;
+            else if (abs)
+                if (out[W-1] == 1)
+                    out <= -out;
+                else if (out[W-1] == 0)
+                    out <= out;
+            else
+                out <= out + in;
+        end
+        else out <= out;
     end
 
 endmodule
