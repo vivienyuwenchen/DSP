@@ -34,7 +34,7 @@ module cpu_test ();
     #82450
     if(dsp.Accumulator.out != 32'h1 || dsp.P.q != 32'h1 || dsp.T.q != 16'h1) begin
           $display("----------------------------------------");
-          $display("FAILED PIPELINE ALU TEST");
+          $display("FAILED DSP TEST");
           $display("$AccumOut$: Expected: %h, ACTUAL: %h", 32'h1, dsp.Accumulator.out);
           $display("$Pout$: Expected: %h, ACTUAL: %h", 32'h1, dsp.P.q);
           $display("$Tout$: Expected: %h, ACTUAL: %h", 16'h1, dsp.T.q);
