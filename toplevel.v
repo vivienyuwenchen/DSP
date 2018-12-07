@@ -20,7 +20,7 @@ module dsp
     wire [2:0] alu_ctrl, accumInMux_ctrl;
     wire [1:0] pcInMux_ctrl, aluInMux_ctrl;
     wire multInMux_ctrl, tReg_ctrl, pReg_ctrl, accumReset_ctrl, arInMux_ctrl, dataRamIn_ctrl, dataWrEn_ctrl;
-    wire [3:0] aluShifter_ctrl, accumShifter_ctrl;
+    wire [2:0] accumShifter_ctrl;                       // unused
     wire [7:0] OP_dk, K;
     wire [6:0] D;
     wire [3:0] OP_s, S;
@@ -67,7 +67,7 @@ module dsp
                     .instruction(instruction));
 
     mux2 #(16) MultInMUX(.in0(dataBus),
-                    .in1(instrMPYK_SE),       // not used, instrMPYK_SE = {3{1'b0}, instrMPYK}
+                    .in1(instrMPYK_SE),       // unused, instrMPYK_SE = {3{1'b0}, instrMPYK}
                     .sel(multInMux_ctrl),
                     .out(multInMuxOut));
 
@@ -86,7 +86,7 @@ module dsp
                     .q(pOut));
 
     barrel #(16) ALUShifter(.in(dataBus),
-                    .sh(aluShifter_ctrl),       // where is this coming from?
+                    .sh(S),
 			        .out(aluShiftOut));
 
     assign data0Padded = {{16{1'b0}}, dataBus};
@@ -126,7 +126,7 @@ module dsp
                     .out(accumOut));
 
     parallel #(32) AccumShifter(.in(accumOut),
-                    .sh(accumShifter_ctrl),         // where is this coming from?
+                    .sh(accumShifter_ctrl),         // unused
 			        .out(accumShiftOut));
 
     mux2 #(16) ARInMux(.in0(dataBus),
@@ -139,8 +139,8 @@ module dsp
                     .in(arIn),
                     .out(arOut));
 
-    assign DP = dataBus[0];             // where is this coming from?
-    assign dpOut = {D, DP};             // CHECK ORDER
+    assign DP = D[0];
+    assign dpOut = {D, DP};             // check order
 
     mux2 #(8) DataRamInMux(.in0(arOut),
                     .in1(dpOut),
