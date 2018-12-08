@@ -71,13 +71,8 @@ module instructionLUT
                 pReg_ctrl = 0;
                 accumReset_ctrl = 0;
                 multInMux_ctrl = 0;
-<<<<<<< HEAD
-                aluInMux_ctrl = 2'b0; //b
-                accumInMux_ctrl = 2'd3; //c
-=======
-                aluInMux_ctrl = 2'0; //b
+                aluInMux_ctrl = 2'b00; //b
                 accumInMux_ctrl = 3'd2; //c
->>>>>>> f6ff662d034f1a886b4b326d34cfd5c3d1504e7f
                 arInMux_ctrl = 0;
                 dataMux_ctrl = 0;
                 dataRamIn_ctrl = 0;
@@ -160,7 +155,7 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00; //0
-                        accumInMux_ctrl = 3'd3; //d 
+                        accumInMux_ctrl = 3'd3; //d
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 0;
@@ -181,7 +176,7 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00; //0
-                        accumInMux_ctrl = 3'd3; //d 
+                        accumInMux_ctrl = 3'd3; //d
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 0;
