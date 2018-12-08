@@ -20,7 +20,7 @@ module dsp
     wire [2:0] alu_ctrl, accumInMux_ctrl;
     wire [1:0] pcInMux_ctrl, aluInMux_ctrl, databus_ctrl;
     wire multInMux_ctrl, tReg_ctrl, pReg_ctrl, accumReset_ctrl, arInMux_ctrl, dataRamIn_ctrl, dataWrEn_ctrl;
-    wire load_acc, abs_acc, enable_acc;
+    wire load_acc, abs_acc, enable_acc, dp_ctrl;
     wire [2:0] accumShifter_ctrl;                       // unused
     wire [7:0] OP_dk, K;
     wire [6:0] D;
@@ -31,7 +31,7 @@ module dsp
     wire [15:0] instrMPYK_SE, accumOutLow;              // unused
     wire [15:0] instruction, dataBus, dataIn;
     wire [15:0] multInMuxOut, tOut, arIn, accumShiftOut, dataOut;
-    wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut;
+    wire [31:0] product, pOut, aluShiftOut, aluInMuxOut, aluOut, accumOut, accumInMuxOut, dataHigh;
     wire [7:0] arOut, dpOut, dataAddr;
     wire [31:0] data0Padded, dk0Padded, stack0Padded;   // unused
     wire carryout, zero, overflow;                      // unused
@@ -108,6 +108,7 @@ module dsp
 
     assign dk0Padded = {{24{1'b0}}, OP_dk};
     assign stack0Padded = {{20{1'b0}}, stackOut};
+    assign dataHigh = {dataBus, {16{1'b0}}};
 
     mux8 #(32) AccumInMUX(.in0(aluOut),
                     .in1(aluShiftOut),
@@ -115,7 +116,7 @@ module dsp
                     .in3(data0Padded),
                     .in4(dk0Padded),
                     .in5(stack0Padded),     // unused
-                    .in6(in6),              // unused
+                    .in6(dataHigh),         // unused
                     .in7(in7),              // unused
                     .sel(accumInMux_ctrl),
                     .out(accumInMuxOut));
@@ -142,7 +143,11 @@ module dsp
                     .in(arIn),
                     .out(arOut));
 
-    assign DP = D[0];
+    dff #(1) DPReg(.clk(clk),
+                    .enable(dp_ctrl),
+                    .d(D[0]),
+                    .q(DP));
+
     assign dpOut = {DP, D};             // check order
 
     mux2 #(8) DataRamInMux(.in0(arOut),
