@@ -9,6 +9,7 @@
 `define opAND   8'b01111001
 `define opLAC   4'b0010
 `define opLACK  8'b01111110
+`define opZAC   16'b0111111110001001
 `define opOR    8'b01111010
 `define opSUB   4'b0001
 `define opLDP   8'b01101111
@@ -70,7 +71,7 @@ module instructionLUT
                 pReg_ctrl = 0;
                 accumReset_ctrl = 0;
                 multInMux_ctrl = 0;
-                aluInMux_ctrl = 2'0; //b
+                aluInMux_ctrl = 2'b0; //b
                 accumInMux_ctrl = 2'd3; //c
                 arInMux_ctrl = 0;
                 dataMux_ctrl = 0;

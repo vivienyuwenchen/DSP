@@ -11,6 +11,7 @@
 `include "instructionmemory.v"
 `include "datamemory.v"
 `include "decoder.v"
+`include "lutctrl.v"
 
 module dsp
 (
@@ -20,7 +21,7 @@ module dsp
     wire [2:0] alu_ctrl, accumInMux_ctrl;
     wire [1:0] pcInMux_ctrl, aluInMux_ctrl, databus_ctrl;
     wire multInMux_ctrl, tReg_ctrl, pReg_ctrl, accumReset_ctrl, arInMux_ctrl, dataRamIn_ctrl, dataWrEn_ctrl;
-    wire load_acc, abs_acc, enable_acc, dp_ctrl;
+    wire load_acc, abs_acc, enable_acc, dp_ctrl, dataMux_ctrl;
     wire [2:0] accumShifter_ctrl;                       // unused
     wire [7:0] OP_dk, K;
     wire [6:0] D;
@@ -39,6 +40,27 @@ module dsp
 
     assign instructionPC = instruction[11:0];   // unused
     assign dataPC = dataBus[11:0];              // unused
+
+    instructionLUT LUT(.instruction(instruction),
+                    .OP_dk(OP_dk),
+                    .OP_s(OP_s),
+                    .tReg_ctrl(tReg_ctrl),
+                    .pReg_ctrl(pReg_ctrl),
+                    .accumReset_ctrl(accumReset_ctrl),
+                    .load_acc(load_acc),
+                    .abs_acc(abs_acc),
+                    .enable_acc(enable_acc),
+                    .databus_ctrl(databus_ctrl),
+                    .multInMux_ctrl(multInMux_ctrl),
+                    .aluInMux_ctrl(aluInMux_ctrl),
+                    .accumInMux_ctrl(accumInMux_ctrl),
+                    .arInMux_ctrl(arInMux_ctrl),
+                    .dataMux_ctrl(dataMux_ctrl),
+                    .dataRamIn_ctrl(dataRamIn_ctrl),
+                    .dataWr_ctrl(dataWrEn_ctrl),
+                    .dp_ctrl(dp_ctrl),
+                    .pcInMux_ctrl(pcInMux_ctrl),
+                    .alu_ctrl(alu_ctrl));
 
     mux4 #(12) PCInMux(.in0(instructionPC), // unused
                     .in1(stackOut),         // unused
