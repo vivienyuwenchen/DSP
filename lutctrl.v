@@ -27,12 +27,18 @@ module instructionLUT
     output reg tReg_ctrl,
     output reg pReg_ctrl,
     output reg accumReset_ctrl,
+    output reg load_acc,
+    output reg abs_acc,
+    output reg enable_acc,
+    output reg [1:0] databus_ctrl,
     output reg multInMux_ctrl,
     output reg [1:0] aluInMux_ctrl,
     output reg [2:0] accumInMux_ctrl,
     output reg arInMux_ctrl,
     output reg dataMux_ctrl,
     output reg dataRamIn_ctrl,
+    output reg dataWr_ctrl,
+    output reg dp_ctrl,
     output reg [1:0] pcInMux_ctrl,
   //  output reg ioExternalMux_ctrl,
     output reg [2:0] alu_ctrl
@@ -40,7 +46,7 @@ module instructionLUT
 
     always @(*) begin
         case(instruction)
-            `opABS: begin //this is def wrong
+            `opABS: begin //this all happens in verilog
                 tReg_ctrl = 0;
                 pReg_ctrl = 0;
                 accumReset_ctrl = 0;
@@ -49,64 +55,93 @@ module instructionLUT
                 accumInMux_ctrl = 2'b00; //d
                 arInMux_ctrl = 0;
                 dataMux_ctrl = 0;
-                dataRamIn_ctrl = 1;
+                dataRamIn_ctrl = 0;
                 pcInMux_ctrl = 2'b11;
                 alu_ctrl = 3'b000;
-
+                load_acc = 0;
+                abs_acc = 1;
+                enable_acc = 1;
+                databus_ctrl = 2'b00;
+                dataWr_ctrl = 0;
+                dp_ctrl = 0;
             end
             `opAPAC: begin
-              tReg_ctrl = 0;
-              pReg_ctrl = 0;
-              accumReset_ctrl = 0;
-              multInMux_ctrl = 0;
-              aluInMux_ctrl = 2'b01; //b
-              accumInMux_ctrl = 2'b00; //a
-              arInMux_ctrl = 0;
-              dataMux_ctrl = 0;
-              dataRamIn_ctrl = 0;
-              pcInMux_ctrl = 2'b11;
-              alu_ctrl = 3'b000; //addition
+                tReg_ctrl = 0;
+                pReg_ctrl = 0;
+                accumReset_ctrl = 0;
+                multInMux_ctrl = 0;
+                aluInMux_ctrl = 2'0; //b
+                accumInMux_ctrl = 2'd3; //c
+                arInMux_ctrl = 0;
+                dataMux_ctrl = 0;
+                dataRamIn_ctrl = 0;
+                pcInMux_ctrl = 2'b11;
+                alu_ctrl = 3'b000; //addition
+                load_acc = 0;
+                abs_acc = 0;
+                enable_acc = 1;
+                databus_ctrl = 2'b00;
+                dataWr_ctrl = 0;
+                dp_ctrl = 0;
 
             end
             `opPAC: begin
-              tReg_ctrl = 0;
-              pReg_ctrl = 0;
-              accumReset_ctrl = 0;
-              multInMux_ctrl = 0;
-              aluInMux_ctrl = 2'b00;
-              accumInMux_ctrl = 2'b10; //c
-              arInMux_ctrl = 0;
-              dataMux_ctrl = 0;
-              dataRamIn_ctrl = 0;
-              pcInMux_ctrl = 2'b11;
-              alu_ctrl = 2'b00;
+                tReg_ctrl = 0;
+                pReg_ctrl = 0;
+                accumReset_ctrl = 1;
+                multInMux_ctrl = 0;
+                aluInMux_ctrl = 2'b00;
+                accumInMux_ctrl = 2'b10; //c
+                arInMux_ctrl = 0;
+                dataMux_ctrl = 0;
+                dataRamIn_ctrl = 0;
+                pcInMux_ctrl = 2'b11;
+                alu_ctrl = 3'b00;
+                load_acc = 1;
+                abs_acc = 0;
+                enable_acc = 0;
+                databus_ctrl = 2'b00;
+                dataWr_ctrl = 0;
+                dp_ctrl = 0;
 
             end
             `opSPAC: begin
-              tReg_ctrl = 0;
-              pReg_ctrl = 0;
-              accumReset_ctrl = 0;
-              multInMux_ctrl = 0;
-              aluInMux_ctrl = 2'b01; //b
-              accumInMux_ctrl = 2'b00; //a
-              arInMux_ctrl = 0;
-              dataMux_ctrl = 0;
-              dataRamIn_ctrl = 0;
-              pcInMux_ctrl = 2'b11;
-              alu_ctrl = 3'b001; //subtract
+                tReg_ctrl = 0;
+                pReg_ctrl = 0;
+                accumReset_ctrl = 0;
+                multInMux_ctrl = 0;
+                aluInMux_ctrl = 2'b01; //b
+                accumInMux_ctrl = 2'b00; //a
+                arInMux_ctrl = 0;
+                dataMux_ctrl = 0;
+                dataRamIn_ctrl = 0;
+                pcInMux_ctrl = 2'b11;
+                alu_ctrl = 3'b001; //subtract
+                load_acc = 0;
+                abs_acc = 0;
+                enable_acc = 1;
+                databus_ctrl = 2'b00;
+                dataWr_ctrl = 0;
+                dp_ctrl = 0;
             end
             `opZAC: begin
-              tReg_ctrl = 0;
-              pReg_ctrl = 0;
-              accumReset_ctrl = 1;
-              multInMux_ctrl = 0;
-              aluInMux_ctrl = 0;
-              accumInMux_ctrl = 0;
-              arInMux_ctrl = 0;
-              dataMux_ctrl = 0;
-              dataRamIn_ctrl = 0;
-              pcInMux_ctrl = 2'b11;
-              alu_ctrl = 3'b000;
+                tReg_ctrl = 0;
+                pReg_ctrl = 0;
+                accumReset_ctrl = 1;
+                multInMux_ctrl = 0;
+                aluInMux_ctrl = 0;
+                accumInMux_ctrl = 0;
+                arInMux_ctrl = 0;
+                dataMux_ctrl = 0;
+                dataRamIn_ctrl = 0;
+                pcInMux_ctrl = 2'b11;
+                alu_ctrl = 3'b000;
+                load_acc = 0;
+                abs_acc = 0;
+                enable_acc = 1;
+                databus_ctrl = 2'b00;
+                dataWr_ctrl = 0;
+                dp_ctrl = 0;
 
 
 
@@ -119,12 +154,19 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00; //0
-                        accumInMux_ctrl = 2'b11; //d
+                        accumInMux_ctrl = 2'd6; //g
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 0;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 1;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
+
 
                     end
                     `opADDS: begin
@@ -133,12 +175,18 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00; //0
-                        accumInMux_ctrl = 2'b01; //b
+                        accumInMux_ctrl = 2'd3; //d
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 0;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 1;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
 
                     end
                     `opAND: begin
@@ -153,6 +201,12 @@ module instructionLUT
                         dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'd4;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 1;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
 
 
                     end
@@ -162,15 +216,38 @@ module instructionLUT
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
                         aluInMux_ctrl = 2'b00; //b
-                        accumInMux_ctrl = 2'b11; //d
+                        accumInMux_ctrl = 3'd4; //e
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 1;
+                        databus_ctrl = 2'b00;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
 
                     end
                     `opOR: begin
+                        tReg_ctrl = 0;
+                        pReg_ctrl = 0;
+                        accumReset_ctrl = 0;
+                        multInMux_ctrl = 0;
+                        aluInMux_ctrl = 3'd7; //7 OR
+                        accumInMux_ctrl = 2'b00; //a
+                        arInMux_ctrl = 1;
+                        dataMux_ctrl = 0;
+                        dataRamIn_ctrl = 1;
+                        pcInMux_ctrl = 2'b11;
+                        alu_ctrl = 3'd0;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 0;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
 
                     end
                     `opLDP: begin
@@ -185,6 +262,12 @@ module instructionLUT
                         dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 0;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 1;
 
                     end
                     `opLT: begin
@@ -192,17 +275,23 @@ module instructionLUT
                         pReg_ctrl = 0;
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
-                        aluInMux_ctrl = 2'b01; //b
+                        aluInMux_ctrl = 2'b00; //b
                         accumInMux_ctrl = 2'b00; //a
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
                         dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 0;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
 
                     end
                     `opLTA: begin
-                        tReg_ctrl = 1;
+                        tReg_ctrl = 0;
                         pReg_ctrl = 1;
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 0;
@@ -213,10 +302,16 @@ module instructionLUT
                         dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 1;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
 
                     end
                     `opMPY: begin
-                        tReg_ctrl = 1;
+                        tReg_ctrl = 0;
                         pReg_ctrl = 1;
                         accumReset_ctrl = 0;
                         multInMux_ctrl = 00; //0
@@ -227,6 +322,13 @@ module instructionLUT
                         dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
+                        load_acc = 0;
+                        abs_acc = 0;
+                        enable_acc = 0;
+                        databus_ctrl = 2'b01;
+                        dataWr_ctrl = 0;
+                        dp_ctrl = 0;
+
 
                     end
                     default: begin
@@ -237,12 +339,18 @@ module instructionLUT
                             accumReset_ctrl = 0;
                             multInMux_ctrl = 0;
                             aluInMux_ctrl = 2'd3; //3
-                            accumInMux_ctrl = 2'b00; //a
+                            accumInMux_ctrl = 2'b01; //b
                             arInMux_ctrl = 0;
                             dataMux_ctrl = 0;
                             dataRamIn_ctrl = 1;
                             pcInMux_ctrl = 2'b11;
                             alu_ctrl = 3'd0;
+                            load_acc = 0;
+                            abs_acc = 0;
+                            enable_acc = 1;
+                            databus_ctrl = 2'b01;
+                            dataWr_ctrl = 0;
+                            dp_ctrl = 0;
 
                             end
                             `opLAC: begin
@@ -251,12 +359,18 @@ module instructionLUT
                               accumReset_ctrl = 0;
                               multInMux_ctrl = 0;
                               aluInMux_ctrl = 2'b00; //b
-                              accumInMux_ctrl = 2'b11; //d
+                              accumInMux_ctrl = 3'd3; //c
                               arInMux_ctrl = 0;
                               dataMux_ctrl = 0;
                               dataRamIn_ctrl = 0;
                               pcInMux_ctrl = 2'b11;
                               alu_ctrl = 3'b000;
+                              load_acc = 1;
+                              abs_acc = 0;
+                              enable_acc = 1;
+                              databus_ctrl = 2'b01;
+                              dataWr_ctrl = 0;
+                              dp_ctrl = 0;
 
                             end
                             `opSUB: begin
@@ -264,13 +378,20 @@ module instructionLUT
                                 pReg_ctrl = 0;
                                 accumReset_ctrl = 0;
                                 multInMux_ctrl = 0;
-                                aluInMux_ctrl = 2'd3; //3
+                                aluInMux_ctrl = 2'd0; //0
                                 accumInMux_ctrl = 2'b00; //a
                                 arInMux_ctrl = 0;
                                 dataMux_ctrl = 0;
                                 dataRamIn_ctrl = 1;
                                 pcInMux_ctrl = 2'b11;
                                 alu_ctrl = 3'd1;
+                                load_acc = 1;
+                                abs_acc = 0;
+                                enable_acc = 1;
+                                databus_ctrl = 2'b01;
+                                dataWr_ctrl = 0;
+                                dp_ctrl = 0;
+
 
                             end
                             default: begin
