@@ -237,6 +237,11 @@ class assembly_parser(object):
 
 
         # R instruction
+        if len(machine_code) == 1:
+            print(machine_code)
+            self.store_bit_string(machine_code[0], instruction, raw_args)
+            return
+
         if len(machine_code) == 2:
 
             print(machine_code)
@@ -244,18 +249,6 @@ class assembly_parser(object):
             # Set rs, rt, imm in the machine_code
             k = int(args[0])
             print(k)
-            #shift  = int(args[1])
-
-            # # Is this one of the andi/addi no offset immediate syntaxes?
-            # if len(args) == 3:
-            #     imm = hex(int(args[2], 16))
-            #
-            # # Is this one of the lui/li type no offset, no rs syntaxes?
-            # elif imm is 'not_valid':
-            #     imm = args[1]
-            #     rs = '0'
-
-            #machine_code[1] = shift
             machine_code[1] = k
             print(machine_code)
 
@@ -281,12 +274,12 @@ class assembly_parser(object):
             print(machine_code)
 
             # Get binary of machine code
-            op_binary = '{:08b}'.format(int(machine_code[0]))
-            print(op_binary)
+            op_binary = machine_code[0]
+            print("op: " +op_binary)
             arp_binary = '{:01b}'.format(int(machine_code[1]))
-            print(arp_binary)
+            print("arp: " +arp_binary)
             dma_binary = '{:07b}'.format(machine_code[2])
-            print(dma_binary)
+            print("dma: " +dma_binary)
             # Create 32-bit string to divide up into bytes
             bit_string = op_binary +  arp_binary + dma_binary
             print(bit_string)

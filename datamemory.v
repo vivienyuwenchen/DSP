@@ -18,10 +18,10 @@ module datamem
 
     always @(posedge clk) begin
         if (en) begin
-            mem[index] <= in;
+            mem[addr] <= in;
         end
     end
 
-    assign out = mem[index];
+    assign out = mem[addr];
 
 endmodule

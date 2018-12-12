@@ -25,14 +25,26 @@ module testDataMem();
     initial begin
         $display("--------------------------------------------------");
         $display("Data memory tests starting...");
+        $readmemb("./assemble/data_mem.dat", dut.mem, 0);
+        $dumpfile("dut.vcd");
+      	$dumpvars();
+        $display("expected [0]: %b", dut.mem[0]);
+        $display("expected [1]: %b", dut.mem[1]);
+        $display("expected [2]: %b", dut.mem[2]);
 
-        en = 1'b1; addr = 8'h15; in = 16'h1234; #1000
+
+        // en = 1'b1; addr = 8'h15; in = 16'h1234; #1000
+        // if (out != 16'h1234)
+        //     $display("DATA MEMORY ERROR Expected: 1234, Got: %h", out);
+
+        en = 1'b0; addr = 8'b0; in = 16'habcd; #1000
         if (out != 16'h1234)
             $display("DATA MEMORY ERROR Expected: 1234, Got: %h", out);
-
-        en = 1'b0; addr = 8'h15; in = 16'habcd; #1000
-        if (out != 16'h1234)
-            $display("DATA MEMORY ERROR Expected: 1234, Got: %h", out);
+        en = 1'b0; addr = 8'b0; in = 16'habcd; #2000
+        en = 1'b0; addr = 8'b01; in = 16'habcd; #2000
+        en = 1'b0; addr = 8'b10; in = 16'habcd; #2000
+        en = 1'b0; addr = 8'b11; in = 16'habcd; #2000
+        en = 1'b0; addr = 8'b100; in = 16'habcd; #2000
 
         $display("Data memory tests done!");
         $display("--------------------------------------------------");

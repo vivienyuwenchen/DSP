@@ -16,7 +16,7 @@
 # All values in HEX
 instruction_table = {
 #Accumulator Instruction
-	'ABS'	: ['0111111110001000'],
+	'AB'	: ['0111111110001000'],
 	'ADD'	: ['0000', 's', '0', 'd'],
 	'ADDH'  : ['01100000','0','d'],
 	'ADDS'	: ['01100001', '0','d'],
@@ -25,13 +25,14 @@ instruction_table = {
 	'LACK'	: ['01111110','k'],
 	'OR'	: ['01111010','0', 'd'],
 	'SUB'	: ['0001', 's', '0','d'],
+	'ZA'	: ['0111111110001001'],
 #Aux Register, Data Page pointer instructions
 	'LDP'	: ['01101111','0', 'd'],
 #T Register, P Register, and multiply instructions
 	'LT'	: ['01101010','0','d'],
 	'LTA'	: ['01101100', '0', 'd'],
-	'APAC'	: ['0111111110001111'],
-	'PAC'	: ['0111111110001110'],
-	'SPAC'	: ['0111111110010000'],
+	'APA'	: ['0111111110001111'],
+	'PA'	: ['0111111110001110'],
+	'SPA'	: ['0111111110010000'],
 	'MPY'	: ['01101101', '0', 'd']
 	}

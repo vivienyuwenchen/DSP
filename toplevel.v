@@ -128,7 +128,7 @@ module dsp
                     .operandB(accumOut),
                     .command(alu_ctrl));
 
-    assign dk0Padded = {{24{1'b0}}, OP_dk};
+    assign dk0Padded = {{24{1'b0}}, K};
     assign stack0Padded = {{20{1'b0}}, stackOut};
     assign dataHigh = {dataBus, {16{1'b0}}};
 

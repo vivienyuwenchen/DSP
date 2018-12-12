@@ -143,9 +143,6 @@ module instructionLUT
                 databus_ctrl = 2'b00;
                 dataWr_ctrl = 0;
                 dp_ctrl = 0;
-
-
-
             end
             default: begin
                 case(OP_dk)
@@ -179,7 +176,7 @@ module instructionLUT
                         accumInMux_ctrl = 3'd3; //d
                         arInMux_ctrl = 1;
                         dataMux_ctrl = 0;
-                        dataRamIn_ctrl = 0;
+                        dataRamIn_ctrl = 1;
                         pcInMux_ctrl = 2'b11;
                         alu_ctrl = 3'b000;
                         load_acc = 0;
@@ -188,6 +185,7 @@ module instructionLUT
                         databus_ctrl = 2'b01;
                         dataWr_ctrl = 0;
                         dp_ctrl = 0;
+
 
                     end
                     `opAND: begin

@@ -22,8 +22,9 @@ module testInstrMem();
         $display("--------------------------------------------------");
         $display("Instruction memory tests starting...");
 
-        $readmemb("./dat/test.dat", dut.mem, 0);
-
+        $readmemb("./assemble/machine_code.dat", dut.mem, 0);
+        $dumpfile("dspTopLevel.vcd");
+        $dumpvars();
         addr = 12'h0; #1000
         if (instr != 16'h509)
             $display("INSTRUCTION MEMORY ERROR Expected: 509, Got: %h", instr);
