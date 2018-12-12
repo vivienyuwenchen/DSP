@@ -38,8 +38,8 @@ module testDataMem();
         //     $display("DATA MEMORY ERROR Expected: 1234, Got: %h", out);
 
         en = 1'b0; addr = 8'b0; in = 16'habcd; #1000
-        if (out != 16'h1234)
-            $display("DATA MEMORY ERROR Expected: 1234, Got: %h", out);
+        if (out != 16'h0001)
+            $display("DATA MEMORY ERROR Expected: 0001, Got: %h", out);
         en = 1'b0; addr = 8'b0; in = 16'habcd; #2000
         en = 1'b0; addr = 8'b01; in = 16'habcd; #2000
         en = 1'b0; addr = 8'b10; in = 16'habcd; #2000
