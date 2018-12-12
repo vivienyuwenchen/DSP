@@ -7,7 +7,12 @@ TopLevel_full.t.v
 
 gtkwave dspTopLevel.vcd
 
+you can also use the make file by runing
+$make
 ## Assembler:
+
+to make a new .dat file from an .asm use
+$ python assembler.py /path/to/test_file.asm`
 
 
 ## Project Description
