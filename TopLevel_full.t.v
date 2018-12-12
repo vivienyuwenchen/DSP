@@ -3,7 +3,7 @@
 
 //------------------------------------------------------------------------
 // Test bench load instructions and data memory.
-// instructions were generated from test_dsp.asm
+// instructions were generated from test_dsp_full.asm
 // This test bench test the funcitonality of all the  instructions this is capable of including ZAC, LACK, ADDS,LT , MPY, ADDH, AND, LAC, OR
 // SUB, LDP, MPY, LTA, APAC, PAC, SPAC
 //------------------------------------------------------------------------
