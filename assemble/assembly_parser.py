@@ -35,18 +35,17 @@ class assembly_parser(object):
     register_table = {}
 
     # current pseudoinstruction table
-    pseudinstr_table = {}
+    #pseudinstr_table = {}
 
     # Output for zengxu's wishes
     output_array = []
 
-    def __init__(self, default_memory_location, instruction_table, register_table, pseudoinstruction_table, word_size):
+    def __init__(self, default_memory_location, instruction_table, register_table, word_size):
         ''' Initialize tables and memory
         '''
         self.default_mem_loc    = default_memory_location
         self.instruction_table  = instruction_table
         self.register_table     = register_table
-        self.pseudinstr_table   = pseudoinstruction_table
         self.word_size          = word_size
 
     def first_pass(self, lines):
@@ -169,9 +168,8 @@ class assembly_parser(object):
                 acount += 1
 
             # Create function code from instruction table
-            if instruction in self.pseudinstr_table.keys():
-                self.parse_pseudoinstruction(instruction, args)
-            elif instruction in self.instruction_table.keys():
+
+            if instruction in self.instruction_table.keys():
                 self.parse_instruction(instruction, args)
 
             else:
@@ -187,7 +185,6 @@ class assembly_parser(object):
         '''
 
         machine_code = self.instruction_table[instruction]
-        print(machine_code)
         # parse arguments
         arg_count = 0
         offset    = 'not_valid'
@@ -225,248 +222,57 @@ class assembly_parser(object):
             # Increment argument counter for modifying list
             arg_count += 1
 
-        # Branch instructions are all relative to location
-        if (instruction == 'beq' or instruction == 'bne'):
-            args[2] = (int(args[2]) - self.current_location - 4)/4
-        # Jump instructions are all absolute divisions of 4 of the location (word loc)
-        if (instruction == 'j' or instruction == 'jal' or instruction == 'jr'):
-            args[0] = str(int(args[0])/4)
-        # Finally convert each value to hex
-        #for i in range(0, len(args)):
-        #    args[i] = str(hex(int(args[i])))
-
-
-        # R instruction
+        # All type instruction
         if len(machine_code) == 1:
-            print(machine_code)
             self.store_bit_string(machine_code[0], instruction, raw_args)
             return
-
+        # immediate type instruction
         if len(machine_code) == 2:
-
-            print(machine_code)
-            print(args)
-            # Set rs, rt, imm in the machine_code
             k = int(args[0])
-            print(k)
             machine_code[1] = k
-            print(machine_code)
 
             # Get binary of machine code
             op_binary = (machine_code[0])
-            print(op_binary)
-            #opp_binary = '{:04b}'.format(machine_code[0])
             k_binary ='{:08b}'.format(machine_code[1])
-            print(k_binary)
-
             # Create 32-bit string to divide up into bytes
             bit_string = op_binary + k_binary
-            print(bit_string)
             self.store_bit_string(bit_string, instruction, raw_args)
             return
+        #Data address type
         if len(machine_code) == 3:
-            print(machine_code)
-            print(args)
-            # Set rs, rt, imm in the machine_code
             dma = int(args[0])
-
             machine_code[2] = dma
-            print(machine_code)
-
             # Get binary of machine code
             op_binary = machine_code[0]
-            print("op: " +op_binary)
             arp_binary = '{:01b}'.format(int(machine_code[1]))
-            print("arp: " +arp_binary)
             dma_binary = '{:07b}'.format(machine_code[2])
-            print("dma: " +dma_binary)
             # Create 32-bit string to divide up into bytes
             bit_string = op_binary +  arp_binary + dma_binary
-            print(bit_string)
             self.store_bit_string(bit_string, instruction, raw_args)
             return
-
-
-        # I instruction
+        # Shift type
         if len(machine_code) == 4:
-            print(machine_code)
-            print(args)
-            # Set rs, rt, imm in the machine_code
+
             dma = int(args[0])
             shift  = int(args[1])
-
-            # # Is this one of the andi/addi no offset immediate syntaxes?
-            # if len(args) == 3:
-            #     imm = hex(int(args[2], 16))
-            #
-            # # Is this one of the lui/li type no offset, no rs syntaxes?
-            # elif imm is 'not_valid':
-            #     imm = args[1]
-            #     rs = '0'
-
             machine_code[1] = shift
             machine_code[3] = dma
-            print(machine_code)
 
             # Get binary of machine code
             op_binary = '{:04b}'.format(int(machine_code[0]))
-            print(op_binary)
-            #opp_binary = '{:04b}'.format(machine_code[0])
             shift_binary ='{:04b}'.format(machine_code[1])
-            print(shift_binary)
             arp_binary = '{:01b}'.format(int(machine_code[2]))
-            print(arp_binary)
             dma_binary = '{:07b}'.format(machine_code[3])
-            print(dma_binary)
             # Create 32-bit string to divide up into bytes
             bit_string = op_binary + shift_binary + arp_binary + dma_binary
-            print(bit_string)
             self.store_bit_string(bit_string, instruction, raw_args)
             return
 
 
-    def parse_pseudoinstruction(self, instruction, args):
-        ''' Parse pseudo instructions, replace with regular instructions
-        '''
-
-        instructions = []
-        arguments    = []
-        if instruction == 'beq':
-            if not '$' in args[1]:
-                if self.value_outside_range(int(args[1])):
-
-                    # Calculate lower and upper 16 bits, put into register
-                    immediate_lower_16 = int(args[1]) % pow(2, 16)
-                    immediate_upper_16 = int(args[1]) / pow(2, 16)
-                    instructions = ['lui', 'ori', 'beq']
-                    arguments    = [['$at', str(immediate_upper_16)],
-                                    ['$at', '$at', str(immediate_lower_16)],
-                                    ['$at', args[0], args[2]]]
-
-                else:
-                    instructions = ['addi', 'beq']
-                    arguments    = [[args[0], args[0], args[1]],
-                                    [args[0], args[0], args[2]]]
-            else:
-                instructions.append(instruction)
-                arguments.append(args)
-
-        # li check for size of argument
-        if instruction == 'li':
-            if self.value_outside_range(int(args[1])):
-                    immediate_lower_16 = int(args[1]) % pow(2, 16)
-                    immediate_upper_16 = int(args[1]) / pow(2, 16)
-                    instructions = ['lui', 'addi']
-                    arguments    = [[args[0], str(immediate_upper_16)], [args[0], args[0], str(immediate_lower_16)]]
-            else:
-                    instructions = ['addi']
-                    arguments    = [[args[0], '$zero', args[1]]]
-
-        # addi check for size of argument
-        if instruction == 'addi':
-            if self.value_outside_range(int(args[2])):
-                 immediate_lower_16 = int(args[2]) % pow(2, 16)
-                 immediate_upper_16 = int(args[2]) / pow(2, 16)
-                 instructions = ['lui', 'addi', 'add']
-                 arguments    = [[args[0], str(immediate_upper_16)],
-                                 [args[0], args[0], str(immediate_lower_16)],
-                                 [args[0], args[0], args[1]]]
-            else:
-                instructions.append(instruction)
-                arguments.append(args)
-
-        # lw check for size of argument
-        # is this correct?
-        if instruction == 'lw':
-            if '(' in args[1]:
-                # Parse offset from known syntax
-                offset = int(args[1][0:args[1].find('(')])
-                register = re.search('\((.*)\)', args[1]).group(1)
-                if self.value_outside_range(offset):
-                    immediate_lower_16 = offset % pow(2, 16)
-                    immediate_upper_16 = offset / pow(2, 16)
-                    instructions = ['lui', 'addi', 'lw']
-                    arguments    = [[args[0], str(immediate_upper_16)],
-                                    [args[0], register, '$zero'],
-                                    [args[0], str(immediate_lower_16)+"("+register+")"]]
-                else:
-                    instructions.append(instruction)
-                    arguments.append(args)
-
-        # Branch instructions will always be same amount of regular instructions
-        if instruction == 'bge':
-            instructions = ['slt', 'beq']
-            arguments = [[args[0], args[0], args[1]], [args[0], '$zero', args[2]]]
-
-        if instruction == 'bgt':
-            instructions = ['slt', 'bne']
-            arguments = [[args[0], args[0], args[1]], [args[0], '$zero', args[2]]]
-
-        if instruction == 'ble':
-            instructions = ['slt', 'bne']
-            arguments = [[args[0], args[1], args[0]], [args[0], '$zero', args[2]]]
-
-        if instruction == 'move':
-            instructions = ['add']
-            arguments = [[args[0], args[1], '$zero']]
-
-        if instruction == 'clear':
-            instructions = ['add']
-            arguments = [[args[0], '$zero', '$zero']]
-
-        count = 0
-
-        for reg_instr in instructions:
-            self.parse_instruction(reg_instr, arguments[count])
-            count += 1
 
     def calculate_instruction_size(self, instruction, args):
             ''' Calculate instruction size for first pass in bytes
             '''
-
-            if instruction in self.pseudinstr_table:
-
-                # Check for overloaded instruction: beq
-                if instruction == 'beq':
-                    if not '$' in args[1]:
-                        if self.value_outside_range(int(args[1])):
-                            return 12
-                        else:
-                            return 8
-                    else:
-                        return 4
-
-                # li check for size of argument
-                if instruction == 'li':
-                    if self.value_outside_range(int(args[1])):
-                        return 8
-                    else:
-                        return 4
-
-                # addi check for size of argument
-                if instruction == 'addi':
-                    if self.value_outside_range(int(args[2])):
-                        return 12
-                    else:
-                        return 4
-
-                # lw check for size of argument
-                if instruction == 'lw':
-                    if '(' in args[1]:
-                        # Parse offset from known syntax
-                        offset = int(args[1][0:args[1].find('(')])
-                        if self.value_outside_range(offset):
-                            return 12
-                        else:
-                            return 4
-
-                # Branch instructions will always be same amount of regular instructions
-                if instruction == 'bgt' or instruction == 'ble' or instruction == 'bge':
-                    return 8
-
-                # move and clear always are 4 bytes
-                return 4
-
             if instruction in self.instruction_table:
                 return 4
             else:
@@ -508,35 +314,10 @@ class assembly_parser(object):
         ''' Store bit string into current memory block, divided into bytes
         '''
         self.output_array.append(bit_string)
-        # # new word!
-        # if self.current_location % 2 == 0:
-        #     # Format it nicely
-        #     self.output_array.append((self.current_location))
-
-        # for i in range(0, len(bit_string) - 1, 8):
-        #     self.system_memory[self.current_location] = bit_string[i:i + 8]
-        #
-        #     self.output_array[-1] = self.output_array[-1] + (bit_string[i:i + 8])
-        #
-        #     self.current_location += 1
-        #
-        # if self.current_location %2 == 0:
-        #     # Finish formatting nicely
-        #     self.output_array[-1] += '    ' + instruction.ljust(5) + ', '.join(arguments)
 
     def print_memory_map(self):
         ''' Print memory map as it exists after allocation
         '''
-       #  print( "The memory map is:\n")
-       #  keylist = self.system_memory.keys()
-       #  print(keylist)
-       #  keylist.sort()
-       #  for key in keylist:
-       #      print( "%s: %s" % (key, self.system_memory[key]))
-       #
-       #  print( "\nThe label list is: " + str(self.symbol_table))
-       # # print "\nThe current location is: " + str(self.current_location)
-       #  print ('\n\n')
         f = open("machine_code.dat", "w")
         print ('The memory map in binary:')
         for output in self.output_array:

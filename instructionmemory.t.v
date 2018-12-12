@@ -1,5 +1,6 @@
 //------------------------------------------------------------------------
 // Test Bench for Instruction Memory Module
+// Instruction memory is loded from machine_code.dat
 //------------------------------------------------------------------------
 
 `timescale 1 ns / 1 ps
@@ -26,12 +27,12 @@ module testInstrMem();
         $dumpfile("dspTopLevel.vcd");
         $dumpvars();
         addr = 12'h0; #1000
-        if (instr != 16'h509)
-            $display("INSTRUCTION MEMORY ERROR Expected: 509, Got: %h", instr);
+        if (instr != 16'h7f89)
+            $display("INSTRUCTION MEMORY ERROR Expected: 7f89, Got: %h", instr);
 
         addr = 12'h2; #1000
-        if (instr != 16'h101)
-            $display("INSTRUCTION MEMORY ERROR Expected: 101, Got: %h", instr);
+        if (instr != 16'h7e0a)
+            $display("INSTRUCTION MEMORY ERROR Expected: 7e0a, Got: %h", instr);
 
         $display("Instruction memory tests done!");
         $display("--------------------------------------------------");

@@ -7,8 +7,6 @@
 from assembly_parser import assembly_parser
 from instruction_table import instruction_table
 from register_table import register_table
-from pseudoinstruction_table import pseudoinstruction_table
-
 import sys
 import getopt
 
@@ -23,7 +21,7 @@ def main(argv):
     for filename in files:
         asm           = open(filename)
         lines         = asm.readlines()
-        parser        = assembly_parser(64, instruction_table, register_table, pseudoinstruction_table,4)
+        parser        = assembly_parser(64, instruction_table, register_table,4)
         parser.first_pass(lines)
         parser.second_pass(lines)
 
