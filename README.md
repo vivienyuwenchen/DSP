@@ -7,7 +7,7 @@ TopLevel_full.t.v
 
 gtkwave dspTopLevel.vcd
 
-you can also use the make file by runing
+you can also use the make file by running
 $make
 ## Assembler:
 
