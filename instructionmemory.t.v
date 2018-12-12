@@ -23,7 +23,7 @@ module testInstrMem();
         $display("--------------------------------------------------");
         $display("Instruction memory tests starting...");
 
-        $readmemb("./assemble/machine_code.dat", dut.mem, 0);
+        $readmemb("./assemble/machine_code_full.dat", dut.mem, 0);
         $dumpfile("dspTopLevel.vcd");
         $dumpvars();
         addr = 12'h0; #1000
