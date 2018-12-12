@@ -1,5 +1,15 @@
 # CompArch Final Project: DSP Architecture
 
+## Tests:
+
+TopLevel_quick.t.v
+TopLevel_full.t.v
+
+gtkwave dspTopLevel.vcd
+
+## Assembler:
+
+
 ## Project Description
 
 For this project, we plan on delving into digital signal processing and its relation to computer architecture. In particular, we want to explore architectural solutions and implementations. We will start off trying to become well versed in the topic, understanding the current use of DSP. Then the focus is to shift to understanding of the architecture. Some modules of interest include multiplier, MAC, filter, and memory. We will scale up from understanding, to designing, and then implementing. We will focus on modules like the (ALU), multiply-accumulator (MAC), barrel-shifter, and memory busses­ and numeric operations of DSP. We imagine that we will end this project with a design and several of these core modules implemented in verilog.
